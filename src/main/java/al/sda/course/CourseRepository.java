@@ -1,10 +1,8 @@
 package al.sda.course;
 
-import al.sda.shared.Repository;
-
 import java.util.NoSuchElementException;
 
-public class CourseRepository implements Repository {
+public class CourseRepository {
     private Course[] courses = new Course[10];
 
     public CourseRepository() {
@@ -66,7 +64,6 @@ public class CourseRepository implements Repository {
         return result;
     }
 
-    @Override
     public boolean hasFreeSpace() {
         for (Course course : courses) {
             if (course == null) {
