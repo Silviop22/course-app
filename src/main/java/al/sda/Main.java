@@ -7,6 +7,7 @@ import al.sda.session.Session;
 import al.sda.session.SessionProcessor;
 import al.sda.session.StudentProcessor;
 import al.sda.shared.Command;
+import al.sda.shared.Role;
 import al.sda.shared.WrongCredentialsException;
 import al.sda.user.Student;
 import al.sda.user.User;
@@ -67,10 +68,15 @@ public class Main {
                     }
                     break;
                 case SIGN_UP:
-                    System.out.println("Choose role");
-                    String role = scanner.nextLine();
-                    userService.saveUser(username, password, role);
-                    break;
+                    try {
+                        System.out.println("Choose role");
+                        String role = scanner.nextLine();
+                        Role newRole = Role.fromString(role);
+                        userService.saveUser(username, password, role);
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
             }
         }
     }
