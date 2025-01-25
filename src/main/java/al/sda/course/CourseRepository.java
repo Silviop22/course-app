@@ -1,8 +1,10 @@
 package al.sda.course;
 
+import al.sda.shared.Repository;
+
 import java.util.NoSuchElementException;
 
-public class CourseRepository {
+public class CourseRepository implements Repository {
     private Course[] courses = new Course[10];
 
     public CourseRepository() {
@@ -37,12 +39,13 @@ public class CourseRepository {
         throw new NoSuchElementException("Could not find course");
     }
 
-    public void addCourse(Course course) {
+    public Course addCourse(Course course) {
         if (!hasFreeSpace()) {
             courses = getIncreasedArray();
         }
 
         saveCourse(course);
+        return course;
     }
 
     private void saveCourse(Course course) {
@@ -64,6 +67,7 @@ public class CourseRepository {
         return result;
     }
 
+    @Override
     public boolean hasFreeSpace() {
         for (Course course : courses) {
             if (course == null) {
