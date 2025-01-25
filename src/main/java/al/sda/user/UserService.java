@@ -1,6 +1,8 @@
 package al.sda.user;
 
 
+import al.sda.shared.WrongCredentialsException;
+
 import java.io.IOException;
 
 public class UserService {
@@ -33,10 +35,10 @@ public class UserService {
         userRepository.addUser(user);
     }
 
-    public User logIn(String username, String password) {
+    public User logIn(String username, String password) throws WrongCredentialsException {
         User user = userRepository.getUser(username);
         if (user == null || !user.getPassword().equals(password)) {
-            System.out.println("Invalid Credentials");
+            throw new WrongCredentialsException();
         }
         return user;
     }

@@ -6,12 +6,15 @@ import al.sda.session.CreatorProcessor;
 import al.sda.session.Session;
 import al.sda.session.SessionProcessor;
 import al.sda.session.StudentProcessor;
+import al.sda.shared.Command;
+import al.sda.shared.WrongCredentialsException;
 import al.sda.user.Student;
 import al.sda.user.User;
 import al.sda.user.UserRepository;
 import al.sda.user.UserService;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -26,8 +29,18 @@ public class Main {
         while (true) {
             System.out.println("Choose how to log in:");
             String commandValue = scanner.nextLine();
+            Command command;
+            try {
+                command = Command.valueOf(commandValue);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Command unrecognized, try again with one of the commands below:");
+                System.out.println("    - " + Command.LOG_IN);
+                System.out.println("    - " + Command.SIGN_UP);
+                System.out.println("    - " + Command.EXIT);
+                continue;
+            }
 
-            if (commandValue.equals("EXIT")) {
+            if (command == Command.EXIT) {
                 break;
             }
 
@@ -35,18 +48,25 @@ public class Main {
             String username = scanner.nextLine();
             System.out.println("Enter a password");
             String password = scanner.nextLine();
-            switch (commandValue) {
-                case "LOG_IN":
-                    User user = userService.logIn(username, password);
-                    Session session = new Session(user);
-                    if (user instanceof Student) {
-                        processor = new StudentProcessor(courseService, session, scanner);
-                    } else {
-                        processor = new CreatorProcessor(courseService, session, scanner);
+            switch (command) {
+                case LOG_IN:
+                    try {
+                        User user = userService.logIn(username, password);
+                        Session session = new Session(user);
+                        if (user instanceof Student) {
+                            processor = new StudentProcessor(courseService, session, scanner);
+                        } else {
+                            processor = new CreatorProcessor(courseService, session, scanner);
+                        }
+                        processor.process();
+                    } catch (WrongCredentialsException | NoSuchElementException e) {
+                        System.out.println(e.getMessage());
+                    } catch (RuntimeException e) {
+                        System.out.println("Something went wrong, please contact support.");
+                        System.exit(500);
                     }
-                    processor.process();
                     break;
-                case "SIGN_UP":
+                case SIGN_UP:
                     System.out.println("Choose role");
                     String role = scanner.nextLine();
                     userService.saveUser(username, password, role);

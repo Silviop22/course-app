@@ -2,6 +2,7 @@ package al.sda.session;
 
 import al.sda.course.Course;
 import al.sda.course.CourseService;
+import al.sda.shared.Command;
 import al.sda.user.Creator;
 import al.sda.user.Student;
 import al.sda.user.User;
@@ -29,22 +30,22 @@ public abstract class SessionProcessor {
         while (true) {
             System.out.println("Enter command");
             String commandString = scanner.nextLine();
-            //LOG_IN
+            final Command command = Command.valueOf(commandString);
 
-            if (commandString.equals("Log out")) {
+            if (command == Command.LOG_OUT) {
                 break;
             }
 
-            switch (commandString) {
-                case "LIST": {
+            switch (command) {
+                case LIST: {
                     listCourses();
                     break;
                 }
-                case "LIST_MY_COURSES": {
+                case LIST_MY_COURSES: {
                     listMyCourses();
                     break;
                 }
-                case "ADD_COURSE": {
+                case ADD_COURSE: {
                     addCourse();
                     break;
                 }
