@@ -23,4 +23,13 @@ public class CourseService {
     public Course getCourse(long id) {
         return repository.getCourseById(id);
     }
+
+    public Course addCourse(String name, String description, double price, int duration) {
+        Course course = new Course();
+        course.setName(name);
+        course.setDescription(description);
+        course.setPrice(price);
+        course.setDuration(duration);
+        return repository.addCourse(course);
+    }
 }

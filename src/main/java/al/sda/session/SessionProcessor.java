@@ -2,15 +2,22 @@ package al.sda.session;
 
 import al.sda.course.Course;
 import al.sda.course.CourseService;
+import al.sda.user.Creator;
+import al.sda.user.Student;
 import al.sda.user.User;
+import al.sda.user.UserService;
 
 import java.util.Scanner;
 
-public class SessionProcessor {
-    private final CourseService courseService;
+public abstract class SessionProcessor {
+    protected final CourseService courseService;
+    protected final Session session;
+    protected final Scanner scanner;
 
-    public SessionProcessor(CourseService courseService) {
+    public SessionProcessor(CourseService courseService, Session session, Scanner scanner) {
         this.courseService = courseService;
+        this.session = session;
+        this.scanner = scanner;
     }
 
     public void addCourse(User user, Course course) {
@@ -18,7 +25,7 @@ public class SessionProcessor {
     }
 
 
-    public void process(Session session, Scanner scanner) {
+    public void process() {
         while (true) {
             System.out.println("Enter command");
             String commandString = scanner.nextLine();
@@ -30,29 +37,35 @@ public class SessionProcessor {
 
             switch (commandString) {
                 case "LIST": {
-                    String[] courses = courseService.listCourses();
-                    for (String course : courses) {
-                        if (course != null) {
-                            System.out.println(course);
-                        }
-                    }
-                    break;
-                }
-                case "BUY": {
-                    System.out.println("Enter course id");
-                    int id = scanner.nextInt();
-                    Course course = courseService.getCourse(id);
-                    addCourse(session.getUser(), course);
+                    listCourses();
                     break;
                 }
                 case "LIST_MY_COURSES": {
-                    for (Course course : session.getUser().getCourses()) {
-                        System.out.println(course.toString());
-                    }
+                    listMyCourses();
+                    break;
+                }
+                case "ADD_COURSE": {
+                    addCourse();
                     break;
                 }
             }
+        }
+    }
 
+    protected void listCourses() {
+        String[] courses = courseService.listCourses();
+        for (String course : courses) {
+            if (course != null) {
+                System.out.println(course);
+            }
+        }
+    }
+
+    protected abstract void addCourse();
+
+    protected void listMyCourses() {
+        for (Course course : session.getUser().getCourses()) {
+            System.out.println(course.toString());
         }
     }
 }

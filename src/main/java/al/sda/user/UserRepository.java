@@ -1,8 +1,10 @@
 package al.sda.user;
 
+import al.sda.shared.Repository;
+
 import java.util.NoSuchElementException;
 
-public class UserRepository {
+public class UserRepository implements Repository {
 
     private User[] users = new User[100];
     public User[] getUsers() {
@@ -51,6 +53,7 @@ public class UserRepository {
         return result;
     }
 
+    @Override
     public boolean hasFreeSpace() {
         for (User user : users) {
             if (user == null) {
