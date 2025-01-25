@@ -7,6 +7,7 @@ import al.sda.session.Session;
 import al.sda.session.SessionProcessor;
 import al.sda.session.StudentProcessor;
 import al.sda.shared.Command;
+import al.sda.shared.Role;
 import al.sda.shared.WrongCredentialsException;
 import al.sda.user.Student;
 import al.sda.user.User;
@@ -69,6 +70,15 @@ public class Main {
                 case SIGN_UP:
                     System.out.println("Choose role");
                     String role = scanner.nextLine();
+                    Role userRole;
+                    try {
+                        userRole = Role.valueOf(role);
+                    }catch (Exception e){
+                        System.out.println("This role doesn't exist, enter an existing role: ");
+                        System.out.println("  -" + Role.STUDENT);
+                        System.out.println("  -" + Role.CREATOR);
+                        continue;
+                    }
                     userService.saveUser(username, password, role);
                     break;
             }
