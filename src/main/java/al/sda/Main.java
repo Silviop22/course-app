@@ -8,10 +8,7 @@ import al.sda.session.SessionProcessor;
 import al.sda.session.StudentProcessor;
 import al.sda.shared.Command;
 import al.sda.shared.WrongCredentialsException;
-import al.sda.user.Student;
-import al.sda.user.User;
-import al.sda.user.UserRepository;
-import al.sda.user.UserService;
+import al.sda.user.*;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -68,9 +65,22 @@ public class Main {
                     break;
                 case SIGN_UP:
                     System.out.println("Choose role");
-                    String role = scanner.nextLine();
-                    userService.saveUser(username, password, role);
-                    break;
+                    String roleValue = scanner.nextLine();
+                    Role role;
+                    try {
+                        role = Role.valueOf(roleValue);
+                        if ((role == Role.STUDENT) || (role == Role.CREATOR)) {
+                            userService.saveUser(username, password, roleValue);
+                            break;
+                        }
+                        } catch(IllegalArgumentException e){
+                            System.out.println(e.getMessage());
+                        System.out.println("Role unrecognized, try again with one of the commands below:");
+                        System.out.println("    - " + Role.STUDENT);
+                        System.out.println("    - " + Role.CREATOR);
+                        continue;
+
+                    }
             }
         }
     }
