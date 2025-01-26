@@ -11,17 +11,26 @@ public class UserRepository implements Repository {
         return users;
     }
 
-    public User getUser(String username) {
+    public User getUser(String userName) {
+        User existing = findUser(userName);
+        if (existing == null) {
+            throw new NoSuchElementException("Could not find user");
+        }
+        return existing;
+    }
+
+    private User findUser(String userName) {
         for (User user : users) {
-            if (user != null && user.getUsername().equals(username)) {
+            if (user != null && user.getUsername().equals(userName)) {
                 return user;
             }
         }
-        throw new NoSuchElementException("Could not find user");
+
+        return null;
     }
 
     public void addUser(User value) {
-        User existing = getUser(value.getUsername());
+        User existing = findUser(value.getUsername());
         if (existing != null) {
             return;
         }
