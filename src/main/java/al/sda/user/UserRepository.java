@@ -21,16 +21,15 @@ public class UserRepository implements Repository {
     }
 
     public void addUser(User value) {
-        User existing = getUser(value.getUsername());
-        if (existing != null) {
-            return;
-        }
+        try {
+            User existing = getUser(value.getUsername());
+        } catch (NoSuchElementException e) {
+            if (!hasFreeSpace()) {
+                users = getIncreasedArray();
+            }
 
-        if (!hasFreeSpace()) {
-            users = getIncreasedArray();
+            saveUser(value);
         }
-
-        saveUser(value);
     }
 
     private void saveUser(User user) {
